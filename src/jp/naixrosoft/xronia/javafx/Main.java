@@ -6,9 +6,13 @@ import java.util.function.Consumer;
 import javafx.application.Application;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import jp.naixrosoft.xronia.javafx.application.Button;
+import jp.naixrosoft.xronia.javafx.application.Canvas;
+import jp.naixrosoft.xronia.javafx.application.Scene;
+import jp.naixrosoft.xronia.javafx.application.Stick;
 import jp.naixrosoft.xronia.javafx.impl.BaseDefine;
-import jp.naixrosoft.xronia.javafx.stick.State;
 import jp.naixrosoft.xronia.javafx.stick.Controller;
+import jp.naixrosoft.xronia.javafx.stick.State;
 
 public class Main extends Application implements BaseDefine {
 
