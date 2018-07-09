@@ -1,4 +1,4 @@
-package jp.naixrosoft.xronia.javafx.application;
+package jp.naixrosoft.xronia.javafx;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jp.naixrosoft.xronia.javafx.impl.BaseDefine;
 import jp.naixrosoft.xronia.javafx.stick.State;
-import jp.naixrosoft.xronia.javafx.stick.StickController;
+import jp.naixrosoft.xronia.javafx.stick.Controller;
 
 public class Main extends Application implements BaseDefine {
 
@@ -64,7 +64,7 @@ public class Main extends Application implements BaseDefine {
 		});
 
 		// ジョイスティック入力
-		StickController stickInput = new StickController();
+		Controller stickInput = new Controller();
 
 		Consumer<State> changeState = e->{
 //			System.out.println("stick:"+Thread.currentThread().getName());

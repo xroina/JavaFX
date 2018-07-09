@@ -3,10 +3,12 @@ package jp.naixrosoft.xronia.javafx.stick;
 /**
  * コントローラー入力の状態。
  */
-public final class State {
+public class State {
+	public static final int BUTTON_MAX = 16;
+
 	public volatile double x = 0.0;
 	public volatile double y = 0.0;
-	public volatile boolean[] button = new boolean[StickController.BUTTON_MAX];
+	public volatile boolean[] button = new boolean[BUTTON_MAX];
 
 	public State() {}
 

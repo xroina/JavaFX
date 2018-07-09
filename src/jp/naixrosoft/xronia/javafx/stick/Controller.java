@@ -9,30 +9,25 @@ import org.lwjgl.glfw.GLFW;
 /**
  * ゲームパッドコントローラー入力。
  */
-public final class StickController {
-
-	public static final int BUTTON_MAX = GLFW.GLFW_JOYSTICK_LAST + 1;
-	private double x = 0.0;
-	private double y = 0.0;
-	private boolean[] button = new boolean[BUTTON_MAX];
+public final class Controller extends State {
 
 	private int stick = 0;
 
-	public StickController() {
-		// GLFWを初期化します。これを行う前に、ほとんどのGLFW関数は機能しません。
+	public Controller() {
+		// GLFWを初期化します。これを行わないとほとんどのGLFW関数は機能しない。
 		if(!GLFW.glfwInit())
 			throw new IllegalStateException("Unable to initialize GLFW");
 
 		GLFW.glfwPollEvents();
 
-		for (stick = 0; stick < BUTTON_MAX; stick++) {
+		for (stick = 0; stick <= GLFW.GLFW_JOYSTICK_LAST; stick++) {
 			if(!GLFW.glfwJoystickPresent(stick)) continue;
 			System.out.println("JoyStick(" + stick + ")Name:" +
 					GLFW.glfwGetJoystickName(stick) + " " +
 					GLFW.glfwGetGamepadName(stick));
 			break;
 		}
-		if(stick >= BUTTON_MAX) stick = -1;
+		if(stick > GLFW.GLFW_JOYSTICK_LAST) stick = -1;
     }
 
 	public boolean available() {
@@ -76,7 +71,8 @@ public final class StickController {
 		if (x != this.x || y != this.y || flag) {
 			this.x = x;
 			this.y = y;
-			for(int i = 0; i < this.button.length; i++) this.button[i] = button[i];
+			for(int i = 0; i < this.button.length; i++)
+				this.button[i] = button[i];
 
 			return Optional.of(new State(x, y, button));
 		}
