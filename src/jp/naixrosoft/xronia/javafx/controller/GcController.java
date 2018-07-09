@@ -27,7 +27,6 @@ public class GcController implements BaseDefine {
 	private final BlockingQueue<EventObject> queue;
 
 	private final GraphicsContext gc;
-	private Timeline timer = null;
 
 	private char[][] charactor = new char[COLS][ROWS];
 	private int x = 0;
@@ -43,9 +42,8 @@ public class GcController implements BaseDefine {
 		gc.setTextBaseline(VPos.TOP);
 		this.gc = gc;
 
-		timer = new Timeline(
-				new KeyFrame(Duration.millis(TIME_OUT),
-						new TimeEvent()));
+		Timeline timer = new Timeline(
+				new KeyFrame(Duration.millis(TIME_OUT), new TimeEvent()));
 		timer.setCycleCount(Timeline.INDEFINITE);
 		timer.play();
 
@@ -67,12 +65,6 @@ public class GcController implements BaseDefine {
 			else if(evt.getClass() == PrintEvent.class) print((PrintEvent)evt);
 			else if(evt.getClass() == LocateEvent.class) locate((LocateEvent)evt);
 		}
-	}
-
-	public void stop() {
-		if(timer != null) timer.stop();
-		System.out.println("GCC Stopped");
-		timer = null;
 	}
 
 	/**

@@ -16,7 +16,7 @@ public interface BaseDefine {
 	static final int FONT_SIZE = 12;
 	static final int BUTTON_MAX = 3;
 
-	static final int TIME_OUT = 30;
+	static final int TIME_OUT = 20;
 
 	static final Color BG = Color.WHITE;
 	static final Color FG = Color.BLACK;

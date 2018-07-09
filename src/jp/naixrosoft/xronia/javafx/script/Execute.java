@@ -19,7 +19,8 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	private final BlockingQueue<EventObject> queue;
 	private GcController gcc;
 
-	public Execute(State ss, BlockingQueue<EventObject> queue, GcController gcc, ByteCode c) {
+	public Execute(State ss, BlockingQueue<EventObject> queue,
+			GcController gcc, ByteCode c) {
 		super(c);
 
 		this.ss = ss;
@@ -48,7 +49,6 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 
 	@Override
 	protected void cls() {
-
 		try {
 			queue.put(new ClsEvent(this));
 		} catch (InterruptedException e) {
@@ -58,7 +58,6 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 
 	@Override
 	protected void locate(int x, int y) {
-
 		try {
 			queue.put(new LocateEvent(this, x, y));
 		} catch (InterruptedException e) {

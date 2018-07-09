@@ -2,7 +2,6 @@ package jp.naixrosoft.xronia.javafx.stick;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.util.Optional;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -11,10 +10,17 @@ import org.lwjgl.glfw.GLFW;
  */
 public final class Controller extends State {
 
-	private int stick = 0;
+	private int stick = -1;		// ジョイスティックNo
 
+	/**
+	 * コントラクタ
+	 *
+	 * この中でジョイスティックの取得を行い、無い場合はジョイスティックNoに-1を入れる。
+	 * ジョイスティックありの場合はその名前を標準出力に表示して最初に見つかったジョイスティックを
+	 * コントロール対象にする。
+	 */
 	public Controller() {
-		// GLFWを初期化します。これを行わないとほとんどのGLFW関数は機能しない。
+		// GLFWを初期化。これを行わないとほとんどのGLFW関数は機能しない。
 		if(!GLFW.glfwInit())
 			throw new IllegalStateException("Unable to initialize GLFW");
 
@@ -30,36 +36,49 @@ public final class Controller extends State {
 		if(stick > GLFW.GLFW_JOYSTICK_LAST) stick = -1;
     }
 
+	/**
+	 * コントロール可能なジョイスティックの有無を返す
+	 *
+	 * @return	ジョイスティックあり(true)/なし(false)
+	 */
 	public boolean available() {
 		return stick >= 0;
 	}
 
-	public Optional<State> getState() {
+	/**
+	 * ジョイスティックの状態を取得する。
+	 *
+	 * @return	ジョイスティックの状態、状態に変化がなければnullを返す
+	 */
+	public State getState() {
 		double x = 0.0;
 		double y = 0.0;
 		boolean[] button = new boolean[BUTTON_MAX];
 
-		int count1 = 0;
-		FloatBuffer stickBuffer = GLFW.glfwGetJoystickAxes(0);
+		// スティックの状態を取得する
+		int axes_count = 0;
+		FloatBuffer stickBuffer = GLFW.glfwGetJoystickAxes(stick);
 		while (stickBuffer.hasRemaining()) {
 			float axes = stickBuffer.get();
-			if(count1 == 0) x = axes;
-			if(count1 == 1) y = axes;
+			if(axes_count == 0) x = axes;
+			if(axes_count == 1) y = axes;
 
-			count1++;
+			axes_count++;
 		}
-
+		// スティックのセンターを0にする
 		if(Math.abs(x) < 0.01) x = 0;
 		if(Math.abs(y) < 0.01) y = 0;
 
-		int count2 = 0;
-		ByteBuffer triggerBuffer = GLFW.glfwGetJoystickButtons(0);
+		// ボタンの状態を取得する
+		int button_count = 0;
+		ByteBuffer triggerBuffer = GLFW.glfwGetJoystickButtons(stick);
 		while (triggerBuffer.hasRemaining()) {
 			byte trigger = triggerBuffer.get();
-			button[count2] = trigger != 0;
-			count2++;
+			button[button_count] = trigger != 0;
+			button_count++;
 		}
 
+		// ボタンの状態に変化があるかを判定する
 		boolean flag = false;
 		for(int i = 0; i < button.length; i++) {
 			if(this.button[i] != button[i]) {
@@ -68,16 +87,18 @@ public final class Controller extends State {
 			}
 		}
 
+		// スティックの状態に変化があるかボタンの状態に変化がある場合はそれを反映して返す。
 		if (x != this.x || y != this.y || flag) {
 			this.x = x;
 			this.y = y;
 			for(int i = 0; i < this.button.length; i++)
 				this.button[i] = button[i];
 
-			return Optional.of(new State(x, y, button));
+			return this;
 		}
 
-		return Optional.empty();
+		// スティックの状態にもボタンの状態にも変化が無い場合はnullを返す。
+		return null;
 	}
 
 }
