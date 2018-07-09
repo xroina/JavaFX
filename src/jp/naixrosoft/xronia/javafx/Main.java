@@ -124,14 +124,14 @@ public class Main extends Application implements BaseDefine {
 			// スティックの位置を設定
 			stick.setCenter(s);
 
-			ss.x = s.x;
-			ss.y = s.y;
+			ss.setX(s.getX());
+			ss.setY(s.getY());
 
 			// ボタンのステータスを変更
-			for(int i = 0; i < ss.button.length; i++) {
+			for(int i = 0; i < State.BUTTON_MAX; i++) {
 				if(i < BUTTON_MAX)
-					button[i].setFill(s.button[i] ? PUSH : RELEAS);
-				ss.button[i] = s.button[i];
+					button[i].setFill(s.getButton(i) ? PUSH : RELEAS);
+				ss.setButton(i, s.getButton(i));
 			}
 		}
 	}

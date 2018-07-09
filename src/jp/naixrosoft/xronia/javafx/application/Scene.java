@@ -39,16 +39,16 @@ public class Scene extends javafx.scene.Scene implements BaseDefine {
 	private void keybordOnTenKey(KeyEvent e) {
 		switch(e.getCode()) {
 		case LEFT:
-			ss.x = -1.0;
+			ss.setX(-1.0);
 			break;
 		case RIGHT:
-			ss.x = 1.0;
+			ss.setX(1.0);
 			break;
 		case UP:
-			ss.y = -1.0;
+			ss.setY(-1.0);
 			break;
 		case DOWN:
-			ss.y = 1.0;
+			ss.setY(1.0);
 			break;
 		default:
 			break;
@@ -68,11 +68,11 @@ public class Scene extends javafx.scene.Scene implements BaseDefine {
 		switch(e.getCode()) {
 		case LEFT:
 		case RIGHT:
-			ss.x = 0.0;
+			ss.setX(0.0);
 			break;
 		case UP:
 		case DOWN:
-			ss.y = 0.0;
+			ss.setY(0.0);
 			break;
 		default:
 			break;
@@ -94,15 +94,15 @@ public class Scene extends javafx.scene.Scene implements BaseDefine {
 		switch(e.getCode()) {
 		case Z:
 			button[0].setFill(b ? PUSH : RELEAS);
-			ss.button[0] = b;
+			ss.setButton(0, b);
 			break;
 		case X:
 			button[1].setFill(b ? PUSH : RELEAS);
-			ss.button[1] = b;
+			ss.setButton(1, b);
 			break;
 		case C:
 			button[2].setFill(b ? PUSH : RELEAS);
-			ss.button[2] = b;
+			ss.setButton(2, b);
 			break;
 		default:
 			break;

@@ -90,8 +90,8 @@ public class Stick extends Rectangle implements BaseDefine {
 	}
 
 	public void setCenter(State ss) {
-		stick.setCenterX(ss.x * BASE_WIDTH / 2 + CIRCLE_LEFT);
-		stick.setCenterY(ss.y * BASE_HEIGHT / 2 + CIRCLE_TOP);
+		stick.setCenterX(ss.getX() * BASE_WIDTH / 2 + CIRCLE_LEFT);
+		stick.setCenterY(ss.getY() * BASE_HEIGHT / 2 + CIRCLE_TOP);
 	}
 
 	/**
@@ -107,11 +107,11 @@ public class Stick extends Rectangle implements BaseDefine {
 			break;
 		case MIDDLE:
 			button[0].setFill(b ? PUSH : RELEAS);
-			ss.button[1] = b;
+			ss.setButton(1, b);
 			break;
 		case SECONDARY:
 			button[1].setFill(b ? PUSH : RELEAS);
-			ss.button[0] = b;
+			ss.setButton(0, b);
 			break;
 		default:
 			break;
@@ -135,8 +135,8 @@ public class Stick extends Rectangle implements BaseDefine {
 			if(BASE_TOP > y) y = BASE_TOP;
 			if(BASE_TOP + BASE_HEIGHT < y) y = BASE_TOP + BASE_HEIGHT;
 
-			ss.x = (x - CIRCLE_LEFT) / BASE_WIDTH * 2;
-			ss.y = (y - CIRCLE_TOP) / BASE_HEIGHT * 2;
+			ss.setX((x - CIRCLE_LEFT) / BASE_WIDTH * 2);
+			ss.setY((y - CIRCLE_TOP) / BASE_HEIGHT * 2);
 
 			this.setCenter(ss);
 		}
@@ -151,8 +151,8 @@ public class Stick extends Rectangle implements BaseDefine {
 	 */
 	private void stickReleased(MouseEvent e) {
 		if(e.getButton().equals(MouseButton.PRIMARY)) {
-			ss.x = 0.0;
-			ss.y = 0.0;
+			ss.setX(0.0);
+			ss.setY(0.0);
 
 			this.setCenter(ss);
 		}

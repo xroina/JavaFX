@@ -21,13 +21,13 @@ public class Button extends Rectangle implements BaseDefine {
 		// ボックスクリック
 		this.setOnMousePressed(e->{
 			this.setFill(PUSH);
-			ss.button[idx] = true;
+			ss.setButton(idx, true);
 			e.consume();
 		});
 
 		this.setOnMouseReleased(e->{
 			this.setFill(RELEAS);
-			ss.button[idx] = false;
+			ss.setButton(idx, false);
 			e.consume();
 		});
 

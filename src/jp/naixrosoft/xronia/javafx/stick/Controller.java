@@ -80,20 +80,18 @@ public final class Controller extends State {
 
 		// ボタンの状態に変化があるかを判定する
 		boolean flag = false;
-		for(int i = 0; i < button.length; i++) {
-			if(this.button[i] != button[i]) {
+		for(int i = 0; i < BUTTON_MAX; i++) {
+			if(this.getButton(i) != button[i]) {
 				flag = true;
 				break;
 			}
 		}
 
 		// スティックの状態に変化があるかボタンの状態に変化がある場合はそれを反映して返す。
-		if (x != this.x || y != this.y || flag) {
-			this.x = x;
-			this.y = y;
-			for(int i = 0; i < this.button.length; i++)
-				this.button[i] = button[i];
-
+		if (x != this.getX() || y != this.getY() || flag) {
+			this.setX(x);
+			this.setY(y);
+			for(int i = 0; i < BUTTON_MAX; i++) this.setButton(i, button[i]);
 			return this;
 		}
 
