@@ -3,6 +3,9 @@ package jp.naixrosoft.xronia.javafx.event;
 import java.util.EventObject;
 
 public class ScrollPrev extends EventObject {
+
+	private static final long serialVersionUID = 1L;
+
 	private int y1;
 	private int y2;
 

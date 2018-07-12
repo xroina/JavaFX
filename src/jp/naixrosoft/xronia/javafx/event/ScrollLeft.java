@@ -3,6 +3,9 @@ package jp.naixrosoft.xronia.javafx.event;
 import java.util.EventObject;
 
 public class ScrollLeft extends EventObject {
+
+	private static final long serialVersionUID = 1L;
+
 	private int x1;
 	private int x2;
 

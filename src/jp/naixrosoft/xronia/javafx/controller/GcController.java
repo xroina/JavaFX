@@ -85,10 +85,14 @@ public class GcController implements BaseDefine {
 			if(evt.getClass() == Cls.class) cls();
 			else if(evt.getClass() == Print.class) print((Print)evt);
 			else if(evt.getClass() == Locate.class) locate((Locate)evt);
-			else if(evt.getClass() == ScrollNext.class) scrollNextLine((ScrollNext)evt);
-			else if(evt.getClass() == ScrollPrev.class) scrollPrevLine((ScrollPrev)evt);
-			else if(evt.getClass() == ScrollLeft.class) scrollLeftColumn((ScrollLeft)evt);
-			else if(evt.getClass() == ScrollRight.class) scrollRightColumn((ScrollRight)evt);
+			else if(evt.getClass() == ScrollNext.class)
+				scrollNextLine((ScrollNext)evt);
+			else if(evt.getClass() == ScrollPrev.class)
+				scrollPrevLine((ScrollPrev)evt);
+			else if(evt.getClass() == ScrollLeft.class)
+				scrollLeftColumn((ScrollLeft)evt);
+			else if(evt.getClass() == ScrollRight.class)
+				scrollRightColumn((ScrollRight)evt);
 		}
 	}
 
@@ -180,8 +184,8 @@ public class GcController implements BaseDefine {
 		for(int j = y1 + 1; j <= y2; j++) {
 			for(int i = 0; i < COLS; i++) {
 				char c = charactor[i][j];
-				printCharactor(c, i, j - 1);
 				charactor[i][j - 1] = c;
+				printCharactor(c, i, j - 1);
 				if(!isHankaku(c)) {
 					i++;
 					charactor[i][j - 1] = c;
@@ -206,8 +210,8 @@ public class GcController implements BaseDefine {
 		for(int j = y2 - 1; j >= y1; j--) {
 			for(int i = 0; i < COLS; i++) {
 				char c = charactor[i][j];
-				printCharactor(c, i, j + 1);
 				charactor[i][j + 1] = c;
+				printCharactor(c, i, j + 1);
 				if(!isHankaku(c)) {
 					i++;
 					charactor[i][j + 1] = c;
@@ -225,7 +229,6 @@ public class GcController implements BaseDefine {
 	 * 左スクロール
 	 *
 	 * @param evt	左スクロールイベント(開始位置,終了位置)
-	 * TODO	全角の時の処理が未実装
 	 */
 	private void scrollLeftColumn(ScrollLeft evt) {
 		int x1 = evt.getX1();
@@ -233,8 +236,14 @@ public class GcController implements BaseDefine {
 		for(int j = 0; j > ROWS; j--) {
 			for(int i = x1 + 1; i <= x2; i++) {
 				char c = charactor[i][j];
-				printCharactor(c, i - 1, j);
 				charactor[i - 1][j] = c;
+				printCharactor(c, i - 1, j);
+				if(!isHankaku(c)) {
+					i++;
+					if(i <= COLS) {
+						charactor[i - 1][j] = c;
+					}
+				}
 			}
 		}
 		for(int k = 0; k < ROWS; k++) {
@@ -248,7 +257,6 @@ public class GcController implements BaseDefine {
 	 * 右スクロール
 	 *
 	 * @param evt	左スクロールイベント(開始位置,終了位置)
-	 * TODO	全角の時の処理が未実装
 	 */
 	private void scrollRightColumn(ScrollRight evt) {
 		int x1 = evt.getX1();
@@ -256,8 +264,13 @@ public class GcController implements BaseDefine {
 		for(int j = 0; j > ROWS; j--) {
 			for(int i = x2 - 1; i >= x1; i--) {
 				char c = charactor[i][j];
-				printCharactor(c, i + 1, j);
 				charactor[i + 1][j] = c;
+				if(!isHankaku(c)) {
+					i--;
+				}
+				if(i > 0) {
+					printCharactor(c, i + 1, j);
+				}
 			}
 		}
 		for(int k = 0; k < ROWS; k++) {
