@@ -4,9 +4,13 @@ import java.util.EventObject;
 import java.util.concurrent.BlockingQueue;
 
 import jp.naixrosoft.xronia.javafx.controller.GcController;
-import jp.naixrosoft.xronia.javafx.event.ClsEvent;
-import jp.naixrosoft.xronia.javafx.event.LocateEvent;
-import jp.naixrosoft.xronia.javafx.event.PrintEvent;
+import jp.naixrosoft.xronia.javafx.event.Cls;
+import jp.naixrosoft.xronia.javafx.event.Locate;
+import jp.naixrosoft.xronia.javafx.event.Print;
+import jp.naixrosoft.xronia.javafx.event.ScrollLeft;
+import jp.naixrosoft.xronia.javafx.event.ScrollNext;
+import jp.naixrosoft.xronia.javafx.event.ScrollPrev;
+import jp.naixrosoft.xronia.javafx.event.ScrollRight;
 import jp.naixrosoft.xronia.javafx.impl.BaseDefine;
 import jp.naixrosoft.xronia.javafx.stick.State;
 import jp.naixrosoft.xronia.script.bytecode.ByteCode;
@@ -61,9 +65,9 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	 * @param str 出力文字列
 	 */
 	@Override
-	protected void doPrint(String str) {
+	public void doPrint(String str) {
 		try {
-			queue.put(new PrintEvent(this, str));
+			queue.put(new Print(this, str));
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -73,9 +77,9 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	 * クリアスクリーン
 	 */
 	@Override
-	protected void doCls() {
+	public void doCls() {
 		try {
-			queue.put(new ClsEvent(this));
+			queue.put(new Cls(this));
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -88,9 +92,9 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	 * @param y 座標
 	 */
 	@Override
-	protected void setLocate(int x, int y) {
+	public void setLocate(int x, int y) {
 		try {
-			queue.put(new LocateEvent(this, x, y));
+			queue.put(new Locate(this, x, y));
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -102,7 +106,7 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	 * @return	X座標
 	 */
 	@Override
-	protected double getStickX() {
+	public double getStickX() {
 		return ss.getX();
 	}
 
@@ -112,7 +116,7 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	 * @return	Y座標
 	 */
 	@Override
-	protected double getStickY() {
+	public double getStickY() {
 		return ss.getY();
 	}
 
@@ -122,7 +126,7 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	 * @return	ボタンビットマップ
 	 */
 	@Override
-	protected long getButton() {
+	public long getButton() {
 		long ret = 0;
 		for(int i = 0; i < State.BUTTON_MAX; i++)
 			ret |= ss.getButton(i) ? (1L << i) : 0;
@@ -137,7 +141,67 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	 * @return	キャラクタ文字
 	 */
 	@Override
-	protected String getCharacter(int x, int y) {
+	public String getCharacter(int x, int y) {
 		return gcc.getCharacter(x, y);
+	}
+
+	/**
+	 * 上スクロール
+	 *
+	 * @param y1	スクロール開始位置
+	 * @param y2	スクロール終了位置
+	 */
+	@Override
+	public void scrollNext(int y1, int y2) {
+		try {
+			queue.put(new ScrollNext(this, y1, y2));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * 下スクロール
+	 *
+	 * @param y1	スクロール開始位置
+	 * @param y2	スクロール終了位置
+	 */
+	@Override
+	public void scrollPrev(int y1, int y2) {
+		try {
+			queue.put(new ScrollPrev(this, y1, y2));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * 左スクロール
+	 *
+	 * @param x1	スクロール開始位置
+	 * @param x2	スクロール終了位置
+	 */
+	@Override
+	public void scrollLeft(int x1, int x2) {
+		try {
+			queue.put(new ScrollLeft(this, x1, x2));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * 右スクロール
+	 *
+	 * @param x1	スクロール開始位置
+	 * @param x2	スクロール終了位置
+	 */
+	@Override
+	public void scrollRight(int x1, int x2) {
+		try {
+			queue.put(new ScrollRight(this, x1, x2));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

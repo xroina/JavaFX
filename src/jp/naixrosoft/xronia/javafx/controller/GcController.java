@@ -14,9 +14,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
-import jp.naixrosoft.xronia.javafx.event.ClsEvent;
-import jp.naixrosoft.xronia.javafx.event.LocateEvent;
-import jp.naixrosoft.xronia.javafx.event.PrintEvent;
+import jp.naixrosoft.xronia.javafx.event.Cls;
+import jp.naixrosoft.xronia.javafx.event.Locate;
+import jp.naixrosoft.xronia.javafx.event.Print;
+import jp.naixrosoft.xronia.javafx.event.ScrollLeft;
+import jp.naixrosoft.xronia.javafx.event.ScrollNext;
+import jp.naixrosoft.xronia.javafx.event.ScrollPrev;
+import jp.naixrosoft.xronia.javafx.event.ScrollRight;
 import jp.naixrosoft.xronia.javafx.impl.BaseDefine;
 
 public class GcController implements BaseDefine {
@@ -32,6 +36,12 @@ public class GcController implements BaseDefine {
 	private int x = 0;
 	private int y = 0;
 
+	/**
+	 * グラフィックコンテキストコントローラーのコンストラクタ
+	 *
+	 * @param cvs	描画キャンバス
+	 * @param queue	イベントキュー
+	 */
 	public GcController(Canvas cvs, BlockingQueue<EventObject> queue) {
 
 		this.queue = queue;
@@ -50,8 +60,19 @@ public class GcController implements BaseDefine {
 		this.cls();
 	}
 
+	/**
+	 * タイムラインの実行クラス
+	 *
+	 * @author xronia
+	 *
+	 */
 	private class TimeEvent implements EventHandler<ActionEvent> {
 
+		/**
+		 * タイムラインイベントハンドラ
+		 *
+		 * @param event	イベントオブジェクト(使わないけど)
+		 */
 		@Override
 		public void handle(ActionEvent event) {
 			EventObject evt = null;
@@ -61,9 +82,13 @@ public class GcController implements BaseDefine {
 				throw new RuntimeException(e);
 			}
 			if(evt == null) return;
-			if(evt.getClass() == ClsEvent.class) cls();
-			else if(evt.getClass() == PrintEvent.class) print((PrintEvent)evt);
-			else if(evt.getClass() == LocateEvent.class) locate((LocateEvent)evt);
+			if(evt.getClass() == Cls.class) cls();
+			else if(evt.getClass() == Print.class) print((Print)evt);
+			else if(evt.getClass() == Locate.class) locate((Locate)evt);
+			else if(evt.getClass() == ScrollNext.class) scrollNextLine((ScrollNext)evt);
+			else if(evt.getClass() == ScrollPrev.class) scrollPrevLine((ScrollPrev)evt);
+			else if(evt.getClass() == ScrollLeft.class) scrollLeftColumn((ScrollLeft)evt);
+			else if(evt.getClass() == ScrollRight.class) scrollRightColumn((ScrollRight)evt);
 		}
 	}
 
@@ -86,9 +111,9 @@ public class GcController implements BaseDefine {
 	/**
 	 * プリント
 	 *
-	 * @param str 出力対象文字列
+	 * @param evt	プリントイベント
 	 */
-	private void print(PrintEvent evt) {
+	private void print(Print evt) {
 		String str = evt.getString();
 
 		for (char c : str.toCharArray()) {
@@ -109,7 +134,7 @@ public class GcController implements BaseDefine {
 			}
 			if(y >= ROWS) {
 				y = ROWS - 1;
-				scrollNextLine();
+				scrollNextLine(0, y);
 			}
 		}
 	}
@@ -117,10 +142,9 @@ public class GcController implements BaseDefine {
 	/**
 	 * 座標設定
 	 *
-	 * @param x 座標
-	 * @param y 座標
+	 * @param evt	ロケールイベント(座標)
 	 */
-	private void locate(LocateEvent evt) {
+	private void locate(Locate evt) {
 		this.x = evt.getX();
 		this.y = evt.getY();
 	}
@@ -136,22 +160,110 @@ public class GcController implements BaseDefine {
 		if(charactor[x][y] == 0) return "";
 		return String.valueOf(charactor[x][y]);
 	}
+
 	/**
 	 * 上スクロール
+	 *
+	 * @param evt	上スクロールイベント(開始位置,終了位置)
 	 */
-	private void scrollNextLine() {
-		for(int j = 1; j < ROWS; j++) {
+	private void scrollNextLine(ScrollNext evt) {
+		scrollNextLine(evt.getY1(), evt.getY2());
+	}
+
+	/**
+	 * 上スクロール
+	 *
+	 * @param y1	スクロール開始位置
+	 * @param y2	スクロール終了位置
+	 */
+	private void scrollNextLine(int y1, int y2) {
+		for(int j = y1 + 1; j <= y2; j++) {
 			for(int i = 0; i < COLS; i++) {
 				char c = charactor[i][j];
 				printCharactor(c, i, j - 1);
 				charactor[i][j - 1] = c;
-				if(!isHankaku(c)) i++;
+				if(!isHankaku(c)) {
+					i++;
+					charactor[i][j - 1] = c;
+				}
 			}
 		}
 		for(int k = 0; k < COLS; k++) {
 			char c = 0;
-			printCharactor(c, k, ROWS -1);
-			charactor[k][ROWS -1] = c;
+			printCharactor(c, k, y2);
+			charactor[k][y2] = c;
+		}
+	}
+
+	/**
+	 * 下スクロール
+	 *
+	 * @param evt	下スクロールイベント(開始位置,終了位置)
+	 */
+	private void scrollPrevLine(ScrollPrev evt) {
+		int y1 = evt.getY1();
+		int y2 = evt.getY2();
+		for(int j = y2 - 1; j >= y1; j--) {
+			for(int i = 0; i < COLS; i++) {
+				char c = charactor[i][j];
+				printCharactor(c, i, j + 1);
+				charactor[i][j + 1] = c;
+				if(!isHankaku(c)) {
+					i++;
+					charactor[i][j + 1] = c;
+				}
+			}
+		}
+		for(int k = 0; k < COLS; k++) {
+			char c = 0;
+			printCharactor(c, k, y1);
+			charactor[k][y1] = c;
+		}
+	}
+
+	/**
+	 * 左スクロール
+	 *
+	 * @param evt	左スクロールイベント(開始位置,終了位置)
+	 * TODO	全角の時の処理が未実装
+	 */
+	private void scrollLeftColumn(ScrollLeft evt) {
+		int x1 = evt.getX1();
+		int x2 = evt.getX2();
+		for(int j = 0; j > ROWS; j--) {
+			for(int i = x1 + 1; i <= x2; i++) {
+				char c = charactor[i][j];
+				printCharactor(c, i - 1, j);
+				charactor[i - 1][j] = c;
+			}
+		}
+		for(int k = 0; k < ROWS; k++) {
+			char c = 0;
+			printCharactor(c, x2, k);
+			charactor[x2][k] = c;
+		}
+	}
+
+	/**
+	 * 右スクロール
+	 *
+	 * @param evt	左スクロールイベント(開始位置,終了位置)
+	 * TODO	全角の時の処理が未実装
+	 */
+	private void scrollRightColumn(ScrollRight evt) {
+		int x1 = evt.getX1();
+		int x2 = evt.getX2();
+		for(int j = 0; j > ROWS; j--) {
+			for(int i = x2 - 1; i >= x1; i--) {
+				char c = charactor[i][j];
+				printCharactor(c, i + 1, j);
+				charactor[i + 1][j] = c;
+			}
+		}
+		for(int k = 0; k < ROWS; k++) {
+			char c = 0;
+			printCharactor(c, x2, k);
+			charactor[x1][k] = c;
 		}
 	}
 
