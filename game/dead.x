@@ -13,15 +13,10 @@ if(ch1 != " " && ch1 != "" || ch2 != " " && ch2 != ""
 || ch3 != " " && ch3 != "" || ch4 != " " && ch4 != "") {
 	while button == 0 {
 		locate x,y
-		print "XX"
-		locate x-1, y+1
-		print "XXXX"
-
+		print "XX\d\l\l\lXXXX"
 
 		locate x, y
-		print "  "
-		locate x-1, y+1
-		print "    "
+		print "  \d\l\l\l    "
 
 		locate 34, 15
 		print " you died!! "

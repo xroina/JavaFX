@@ -141,6 +141,23 @@ public class GcController implements BaseDefine {
 				x = 0;
 				y++;
 				break;
+
+			case '\u001c':
+				x++;
+				break;
+
+			case '\u001d':
+				x--;
+				break;
+
+			case '\u001e':
+				y--;
+				break;
+
+			case '\u001f':
+				y++;
+				break;
+
 			default:
 				printCharactor(c, x, y);
 				if(isHankaku(c)) x++;
@@ -150,10 +167,14 @@ public class GcController implements BaseDefine {
 			if(x >= COLS) {
 				x = 0;
 				y++;
+			} else if(x < 0) {
+				x = 0;
 			}
 			if(y >= ROWS) {
 				y = ROWS - 1;
 				scrollNextLine(0, y);
+			} else if(y < 0) {
+				y = 0;
 			}
 		}
 	}

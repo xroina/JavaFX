@@ -16,9 +16,7 @@ while 1 {
 	print "Score:" + score + " Left:" + left
 
 	locate x, y
-	print "Ａ"
-	locate x-1, y+1
-	print "I□I"
+	print "Ａ\d\l\l\lI□I"
 
 	if button {
 		score = score + :game:fire(x, y)
@@ -29,9 +27,7 @@ while 1 {
 	print "(∀)"
 
 	locate x, y
-	print "  "
-	locate x-1, y+1
-	print "    "
+	print "  \d\l\l\l    "
 
 	scrollPrev 1, 29
 
