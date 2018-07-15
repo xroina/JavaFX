@@ -1,11 +1,28 @@
-x=38
-y=28
 
-while(1) {
+while button == 0 {
+	locate 23,15
+	print "Press the button to start the game"
+}
+cls
+
+x = 38
+y = 28
+
+score = 0
+left = 3
+
+while 1 {
+	locate 0,0
+	print "Score:" + score + " Left:" + left
+
 	locate x, y
 	print "Ａ"
 	locate x-1, y+1
 	print "I□I"
+
+	if button {
+		score = score + :game:fire(x, y)
+	}
 
 	ex = abs(rnd) % 76
 	locate ex, 1
@@ -17,6 +34,16 @@ while(1) {
 	print "    "
 
 	scrollPrev 1, 29
+
+	if :game:dead(x, y) {
+
+		left = left - 1
+
+		if left < 1 {
+			break
+		}
+		continue
+	}
 
 	dx = stickX
 	dy = stickY
@@ -33,10 +60,13 @@ while(1) {
 	if y > 28 {
 		y = 28
 	}
-	if y < 1 {
+	if y < 2 {
 		y = 1
 	}
 
-
-
 }
+locate 0,0
+print "Score:" + score + " Left:" + left
+
+locate 34, 15
+print " game over!! "

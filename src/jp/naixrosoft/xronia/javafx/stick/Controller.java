@@ -2,6 +2,7 @@ package jp.naixrosoft.xronia.javafx.stick;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.Optional;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -51,6 +52,8 @@ public final class Controller extends State {
 	 * @return	ジョイスティックの状態、状態に変化がなければnullを返す
 	 */
 	public State getState() {
+		if(!available()) return null;
+
 		double x = 0.0;
 		double y = 0.0;
 		boolean[] button = new boolean[BUTTON_MAX];
@@ -66,8 +69,10 @@ public final class Controller extends State {
 			axes_count++;
 		}
 		// スティックのセンターを0にする
-		if(Math.abs(x) < 0.01) x = 0;
-		if(Math.abs(y) < 0.01) y = 0;
+		x = Math.floor(Math.abs(x) * 100.0) / 100.0 * Math.signum(x);
+		y = Math.floor(Math.abs(y) * 100.0) / 100.0 * Math.signum(y);
+//		if(Math.abs(x) < 0.01) x = 0;
+//		if(Math.abs(y) < 0.01) y = 0;
 
 		// ボタンの状態を取得する
 		int button_count = 0;
@@ -98,5 +103,10 @@ public final class Controller extends State {
 		// スティックの状態にもボタンの状態にも変化が無い場合はnullを返す。
 		return null;
 	}
+
+	public Optional<State> getStateOptional() {
+		return Optional.ofNullable(getState());
+	}
+
 
 }

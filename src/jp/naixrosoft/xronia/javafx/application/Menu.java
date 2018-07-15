@@ -78,15 +78,10 @@ public class Menu extends ContextMenu implements BaseDefine {
 		GcController gcc = new GcController(cvs, queue);
 		exe = new Execute(ss, queue, gcc, code);
 
-//		ForkJoinPool.commonPool().execute(()->{
-//			try {
-//				exe.execute();
-//			} catch (ScriptException e) {
-//				throw new RuntimeException(e);
-//			}
-//		});
+//		ForkJoinPool.commonPool().execute(()->exe.run());
 
 		Thread thread = new Thread(exe);
+		thread.setPriority(Thread.MIN_PRIORITY);
 		thread.start();
 	}
 

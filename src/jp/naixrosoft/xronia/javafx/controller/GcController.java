@@ -1,5 +1,7 @@
 package jp.naixrosoft.xronia.javafx.controller;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.EventObject;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -52,12 +54,13 @@ public class GcController implements BaseDefine {
 		gc.setTextBaseline(VPos.TOP);
 		this.gc = gc;
 
+		this.cls();
+
 		Timeline timer = new Timeline(
 				new KeyFrame(Duration.millis(TIME_OUT), new TimeEvent()));
 		timer.setCycleCount(Timeline.INDEFINITE);
+//		timer.setAutoReverse(true);
 		timer.play();
-
-		this.cls();
 	}
 
 	/**
@@ -75,24 +78,36 @@ public class GcController implements BaseDefine {
 		 */
 		@Override
 		public void handle(ActionEvent event) {
+
+			final LocalDateTime baseTime = LocalDateTime.now();
+//			System.out.println("start:" + baseTime);
+
 			EventObject evt = null;
-			try {
-				evt = queue.poll(0, TimeUnit.MICROSECONDS);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-			if(evt == null) return;
-			if(evt.getClass() == Cls.class) cls();
-			else if(evt.getClass() == Print.class) print((Print)evt);
-			else if(evt.getClass() == Locate.class) locate((Locate)evt);
-			else if(evt.getClass() == ScrollNext.class)
-				scrollNextLine((ScrollNext)evt);
-			else if(evt.getClass() == ScrollPrev.class)
-				scrollPrevLine((ScrollPrev)evt);
-			else if(evt.getClass() == ScrollLeft.class)
-				scrollLeftColumn((ScrollLeft)evt);
-			else if(evt.getClass() == ScrollRight.class)
-				scrollRightColumn((ScrollRight)evt);
+
+			do {
+				try {
+					evt = queue.poll(0, TimeUnit.NANOSECONDS);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+//				System.out.println("poll:" + ChronoUnit.MICROS.between(baseTime, LocalDateTime.now()) + " evt:"+evt);
+				if(evt == null) break;
+
+				if(evt.getClass() == Cls.class) cls();
+				else if(evt.getClass() == Print.class) print((Print)evt);
+				else if(evt.getClass() == Locate.class) locate((Locate)evt);
+				else if(evt.getClass() == ScrollNext.class)
+					scrollNextLine((ScrollNext)evt);
+				else if(evt.getClass() == ScrollPrev.class)
+					scrollPrevLine((ScrollPrev)evt);
+				else if(evt.getClass() == ScrollLeft.class)
+					scrollLeftColumn((ScrollLeft)evt);
+				else if(evt.getClass() == ScrollRight.class)
+					scrollRightColumn((ScrollRight)evt);
+
+			} while(ChronoUnit.MILLIS.between(baseTime, LocalDateTime.now())
+					< TIME_OUT);
+
 		}
 	}
 

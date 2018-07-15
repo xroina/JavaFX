@@ -54,7 +54,7 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 		try {
 			this.execute();
 		} catch (ScriptException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return;
 	}
@@ -71,6 +71,11 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+		try {
+			Thread.sleep(0, 1);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -80,6 +85,11 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	public void doCls() {
 		try {
 			queue.put(new Cls(this));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			Thread.sleep(0, 1);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -95,6 +105,11 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	public void setLocate(int x, int y) {
 		try {
 			queue.put(new Locate(this, x, y));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			Thread.sleep(0, 1);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -158,6 +173,11 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+		try {
+			Thread.sleep(0, 1);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -170,6 +190,11 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	public void scrollPrev(int y1, int y2) {
 		try {
 			queue.put(new ScrollPrev(this, y1, y2));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			Thread.sleep(0, 1);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -188,6 +213,11 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+		try {
+			Thread.sleep(0, 1);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -200,6 +230,11 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 	public void scrollRight(int x1, int x2) {
 		try {
 			queue.put(new ScrollRight(this, x1, x2));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			Thread.sleep(0, 1);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}

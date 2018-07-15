@@ -1,13 +1,13 @@
 package jp.naixrosoft.xronia.javafx;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Consumer;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import jp.naixrosoft.xronia.javafx.application.Button;
 import jp.naixrosoft.xronia.javafx.application.Canvas;
 import jp.naixrosoft.xronia.javafx.application.Scene;
@@ -80,13 +80,31 @@ public class Main extends Application implements BaseDefine {
 
 		// ジョイスティック入力
 		Controller ctrl = new Controller();
-		if(ctrl.available()) {
-			Timeline timer = new Timeline(
-					new KeyFrame(Duration.millis(TIME_OUT),
-							new StickEvent(ctrl)));
-			timer.setCycleCount(Timeline.INDEFINITE);
-			timer.play();
+
+		// ForkJoinPool版
+		Consumer<State> changeState = e->stickExec(e);
+
+		if (ctrl.available()) {
+			ForkJoinPool.commonPool().execute(()->{
+				while(true) {
+					ctrl.getStateOptional().ifPresent(changeState);
+					try {
+						Thread.sleep(TIME_OUT);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
 		}
+
+//		// TimeLine版
+//		if(ctrl.available()) {
+//			Timeline timer = new Timeline(
+//					new KeyFrame(Duration.millis(TIME_OUT),
+//							new StickEvent(ctrl)));
+//			timer.setCycleCount(Timeline.INDEFINITE);
+//			timer.play();
+//		}
 
 		// ウインドウ表示
 		stage.show();
@@ -121,18 +139,22 @@ public class Main extends Application implements BaseDefine {
 			State s = ctrl.getState();		// ジョイスティックの情報取得
 			if(s == null) return;			// nullの場合は変化ないため何もしない
 
-			// スティックの位置を設定
-			stick.setCenter(s);
+			stickExec(s);
+		}
+	}
 
-			ss.setX(s.getX());
-			ss.setY(s.getY());
+	private void stickExec(State s) {
+		// スティックの位置を設定
+		stick.setCenter(s);
 
-			// ボタンのステータスを変更
-			for(int i = 0; i < State.BUTTON_MAX; i++) {
-				if(i < BUTTON_MAX)
-					button[i].setFill(s.getButton(i) ? PUSH : RELEAS);
-				ss.setButton(i, s.getButton(i));
-			}
+		ss.setX(s.getX());
+		ss.setY(s.getY());
+
+		// ボタンのステータスを変更
+		for(int i = 0; i < State.BUTTON_MAX; i++) {
+			if(i < BUTTON_MAX)
+				button[i].setFill(s.getButton(i) ? PUSH : RELEAS);
+			ss.setButton(i, s.getButton(i));
 		}
 	}
 }
