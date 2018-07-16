@@ -31,6 +31,7 @@ public class GcController implements BaseDefine {
 	private static final int ROWS = (int)HEIGHT / 16;
 
 	private final BlockingQueue<EventObject> queue;
+	Timeline timer = null;
 
 	private final GraphicsContext gc;
 
@@ -56,7 +57,8 @@ public class GcController implements BaseDefine {
 
 		this.cls();
 
-		Timeline timer = new Timeline(
+		// タイムライン登録
+		timer = new Timeline(
 				new KeyFrame(Duration.millis(TIME_OUT), new TimeEvent()));
 		timer.setCycleCount(Timeline.INDEFINITE);
 //		timer.setAutoReverse(true);
@@ -90,7 +92,9 @@ public class GcController implements BaseDefine {
 				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
 				}
-//				System.out.println("poll:" + ChronoUnit.MICROS.between(baseTime, LocalDateTime.now()) + " evt:"+evt);
+//				System.out.println("poll:" +
+//					ChronoUnit.MICROS.between(baseTime, LocalDateTime.now()) +
+//						" evt:" + evt);
 				if(evt == null) break;
 
 				if(evt.getClass() == Cls.class) cls();
@@ -112,9 +116,34 @@ public class GcController implements BaseDefine {
 	}
 
 	/**
+	 * タイムラインの停止
+	 */
+	public void stop() {
+		// キューを消す
+		final LocalDateTime baseTime = LocalDateTime.now();
+		do {
+			try {
+				if(null == queue.poll(0, TimeUnit.NANOSECONDS)) break;
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		} while(ChronoUnit.MILLIS.between(baseTime, LocalDateTime.now())
+				< TIME_OUT);
+
+		timer.stop();
+	}
+
+	/**
+	 * タイムラインの開始
+	 */
+	public void start() {
+		timer.play();
+	}
+
+	/**
 	 * クリアスクリーン
 	 */
-	private void cls() {
+	public void cls() {
 		gc.setFill(BG);
 		gc.fillRect(0, 0, WIDTH, HEIGHT);
 

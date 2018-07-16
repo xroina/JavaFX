@@ -54,8 +54,20 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 		try {
 			this.execute();
 		} catch (ScriptException e) {
+			try {
+				Thread.sleep(TIME_OUT);
+			} catch (InterruptedException e1) {
+				throw new RuntimeException(e1);
+			}
+			gcc.stop();
 			throw new RuntimeException(e);
 		}
+		try {
+			Thread.sleep(TIME_OUT);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		gcc.stop();
 		return;
 	}
 

@@ -21,6 +21,8 @@ import jp.naixrosoft.xronia.script.bytecode.ByteCode;
 import jp.naixrosoft.xronia.script.exception.ScriptException;
 
 public class Menu extends ContextMenu implements BaseDefine {
+	BlockingQueue<EventObject> queue = null;
+	GcController gcc = null;
 	private Execute exe = null;
 	private State ss = null;
 
@@ -31,6 +33,9 @@ public class Menu extends ContextMenu implements BaseDefine {
 		MenuItem open = new MenuItem("Open");
 		open.setOnAction(e->openFileDialog(stage, cvs));
 
+		MenuItem start = new MenuItem("Start");
+		start.setOnAction(e->execute());
+
 		MenuItem stop = new MenuItem("Stop");
 		stop.setOnAction(e->stop());
 
@@ -40,7 +45,7 @@ public class Menu extends ContextMenu implements BaseDefine {
 		MenuItem close = new MenuItem("Close");
 		close.setOnAction(e->stage.close());
 
-		this.getItems().addAll(open, stop, help, close);
+		this.getItems().addAll(open, start, stop, help, close);
 	}
 
 	/**
@@ -50,22 +55,28 @@ public class Menu extends ContextMenu implements BaseDefine {
 	 */
 	private void openFileDialog(Stage stage, Canvas cvs) {
 
-		if(exe != null) {
+		// 実行中なら開かない
+		if(exe != null && exe.runnable()) {
 			System.err.println("実行中");
 			return;
 		}
 
+		// ファイル選択ダイアログを開く
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Select File");
 
 		File importFile = fc.showOpenDialog(stage);
 
+		// ファイルが選択されてなければそのまま閉じる
 		if (importFile == null) return;
 
 		String file = importFile.getPath();
 
+		// スクリプトの引数は空で定義
 		List<String> arguments = new ArrayList<>();
 		ByteCode code = new ByteCode();
+
+		// スクリプトのコンパイル
 		try {
 			Script script = new Script(code);
 			script.compile(file, arguments);
@@ -74,20 +85,45 @@ public class Menu extends ContextMenu implements BaseDefine {
 			return;
 		}
 
-		BlockingQueue<EventObject> queue = new LinkedBlockingQueue<>(1);
-		GcController gcc = new GcController(cvs, queue);
-		exe = new Execute(ss, queue, gcc, code);
-
-//		ForkJoinPool.commonPool().execute(()->exe.run());
-
-		Thread thread = new Thread(exe);
-		thread.setPriority(Thread.MIN_PRIORITY);
-		thread.start();
+		queue = new LinkedBlockingQueue<>(1);		// データ受け渡し用のキュー
+		gcc = new GcController(cvs, queue);			// グラフィックコンテキストコントローラー
+		exe = new Execute(ss, queue, gcc, code);	// スクリプト実行オブジェクト
+		execute();
 	}
 
+	/**
+	 * スクリプト実行
+	 */
+	private void execute() {
+
+		// 実行中なら開かない
+		if(exe != null && exe.runnable()) {
+			System.err.println("実行中");
+			return;
+		}
+		if(exe == null) {
+			System.err.println("スクリプトの実体がない");
+			return;
+		}
+
+//		ForkJoinPool.commonPool().execute(()->exe.run());	// ForkPoolでの実装
+		gcc.cls();
+		gcc.start();
+
+		Thread thread = new Thread(exe);			// スレッドでの実装
+		thread.setPriority(Thread.MIN_PRIORITY);	// プライオリティは低い
+		thread.start();								// スレッド開始
+	}
+
+	/**
+	 * スクリプト停止処理
+	 */
 	public void stop() {
-		if(exe != null) exe.stop();
-		exe = null;
+		if(exe == null || !exe.runnable()) return;
+
+		exe.stop();
+
+		gcc.stop();
 	}
 
 }
