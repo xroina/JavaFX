@@ -11,17 +11,15 @@ ch4 = character(x-1,y+1)
 
 if(ch1 != " " && ch1 != "" || ch2 != " " && ch2 != ""
 || ch3 != " " && ch3 != "" || ch4 != " " && ch4 != "") {
-	while button == 0 {
-		locate x,y
-		print "XX\d\l\l\lXXXX"
 
-		locate x, y
-		print "  \d\l\l\l    "
+	locate 25, 15
+	print " you died!! Press the button "
 
-		locate 34, 15
-		print " you died!! "
+	locate x,y
+	print "XX\d\l\l\lXXXX"
 
-	}
+	while button == 0 { }
+	while button != 0 { }
 
 	left = 1
 	cls

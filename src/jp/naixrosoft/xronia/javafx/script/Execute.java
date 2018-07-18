@@ -120,11 +120,6 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		try {
-			Thread.sleep(0, 1);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**

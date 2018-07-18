@@ -55,14 +55,11 @@ public class GcController implements BaseDefine {
 		gc.setTextBaseline(VPos.TOP);
 		this.gc = gc;
 
-		this.cls();
-
 		// タイムライン登録
 		timer = new Timeline(
 				new KeyFrame(Duration.millis(TIME_OUT), new TimeEvent()));
 		timer.setCycleCount(Timeline.INDEFINITE);
 //		timer.setAutoReverse(true);
-		timer.play();
 	}
 
 	/**

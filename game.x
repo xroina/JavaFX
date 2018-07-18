@@ -1,8 +1,8 @@
 
-while button == 0 {
-	locate 23,15
-	print "Press the button to start the game"
-}
+locate 23,15
+print "Press the button to start the game"
+while button == 0 { }
+while button != 0 { }
 cls
 
 x = 38
