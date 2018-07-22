@@ -2,6 +2,12 @@ package jp.naixrosoft.xronia.javafx.impl;
 
 import javafx.scene.paint.Color;
 
+/**
+ * 定数設定インターフェース
+ *
+ * @author xronia
+ *
+ */
 public interface BaseDefine {
 
 	static final double WIDTH = 640;

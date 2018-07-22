@@ -13,10 +13,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
+import jp.naixrosoft.xronia.javafx.event.AllColor;
+import jp.naixrosoft.xronia.javafx.event.BgColor;
 import jp.naixrosoft.xronia.javafx.event.Cls;
+import jp.naixrosoft.xronia.javafx.event.FgColor;
 import jp.naixrosoft.xronia.javafx.event.Locate;
 import jp.naixrosoft.xronia.javafx.event.Print;
 import jp.naixrosoft.xronia.javafx.event.ScrollLeft;
@@ -44,6 +48,8 @@ public class GcController implements BaseDefine {
 	private char[][] charactor = new char[COLS][ROWS];	// キャラクタ座標系
 	private int x = 0;									// キャラクタX座標
 	private int y = 0;									// キャラクタY座標
+	private int fgcolor = colorToInteger(FG);			// フォアグラウンドカラー
+	private int bgcolor = colorToInteger(BG);			// バックグラウンドカラー
 
 	/**
 	 * グラフィックコンテキストコントローラーのコンストラクタ
@@ -100,9 +106,12 @@ public class GcController implements BaseDefine {
 //						" evt:" + evt);
 				if(evt == null) break;
 
-				if(evt.getClass() == Cls.class) cls();
-				else if(evt.getClass() == Print.class) print((Print)evt);
-				else if(evt.getClass() == Locate.class) locate((Locate)evt);
+				if(evt.getClass() == Cls.class)
+					cls();
+				else if(evt.getClass() == Print.class)
+					print((Print)evt);
+				else if(evt.getClass() == Locate.class)
+					locate((Locate)evt);
 				else if(evt.getClass() == ScrollNext.class)
 					scrollNextLine((ScrollNext)evt);
 				else if(evt.getClass() == ScrollPrev.class)
@@ -111,6 +120,12 @@ public class GcController implements BaseDefine {
 					scrollLeftColumn((ScrollLeft)evt);
 				else if(evt.getClass() == ScrollRight.class)
 					scrollRightColumn((ScrollRight)evt);
+				else if(evt.getClass() == AllColor.class)
+					setColor((AllColor)evt);
+				else if(evt.getClass() == FgColor.class)
+					setFgColor((FgColor)evt);
+				else if(evt.getClass() == BgColor.class)
+					setBgColor((BgColor)evt);
 
 			} while(ChronoUnit.MILLIS.between(baseTime, LocalDateTime.now())
 					< TIME_OUT);
@@ -147,7 +162,7 @@ public class GcController implements BaseDefine {
 	 * クリアスクリーン
 	 */
 	public void cls() {
-		gc.setFill(BG);
+		gc.setFill(integerToColor(bgcolor));
 		gc.fillRect(0, 0, WIDTH, HEIGHT);
 
 		for(int i = 0; i < COLS; i++) {
@@ -349,6 +364,34 @@ public class GcController implements BaseDefine {
 	}
 
 	/**
+	 * カラー設定
+	 *
+	 * @param evt	カラーイベント(フォアグラウンドカラー, バックグラウンドカラー)
+	 */
+	private void setColor(AllColor evt) {
+		fgcolor = evt.getFgColor();
+		bgcolor = evt.getBgColor();
+	}
+
+	/**
+	 * カラー設定
+	 *
+	 * @param evt	フォアグラウンドカラーイベント
+	 */
+	private void setFgColor(FgColor evt) {
+		fgcolor = evt.getFgColor();
+	}
+
+	/**
+	 * カラー設定
+	 *
+	 * @param evt	 バックグラウンドカラーイベント
+	 */
+	private void setBgColor(BgColor evt) {
+		bgcolor = evt.getBgColor();
+	}
+
+	/**
 	 * 文字を指定の座標に出力する
 	 *
 	 * @param c		出力する文字
@@ -358,10 +401,10 @@ public class GcController implements BaseDefine {
 	private void printCharactor(char c, int x, int y) {
 		charactor[x][y] = c;
 
-		gc.setFill(BG);
+		gc.setFill(integerToColor(bgcolor));
 		gc.fillRect(x * 8, y * 16, isHankaku(c) ? 8 : 16, 16);
 
-		gc.setFill(FG);
+		gc.setFill(integerToColor(fgcolor));
 		gc.fillText(String.valueOf(c), x * 8, y * 16);
 
 		if(!isHankaku(c) && x + 1 < COLS) {
@@ -381,5 +424,38 @@ public class GcController implements BaseDefine {
 				(c == '\u203e') ||					// ~記号
 				(c >= '\uff61' && c <= '\uff9f');	// 半角カナ
 
+	}
+
+	/**
+	 * カラーから整数へ変換
+	 *
+	 * @param color		カラーオブジェクト
+	 * @return			値(webカラー)
+	 */
+	private int colorToInteger(Color color) {
+
+//		System.out.println("colorToInteger:"+color.toString());
+
+		return	(int)(color.getRed()   * 255) << 16 |
+				(int)(color.getGreen() * 255) << 8  |
+				(int)(color.getBlue()  * 255);
+	}
+
+	/**
+	 * 整数からカラーへ変換
+	 *
+	 * @param color		値(webカラー)
+	 * @return			カラーオブジェクト
+	 */
+	private Color integerToColor(int color) {
+
+		int blue =   color        & 0xff;
+		int green = (color >>  8) & 0xff;
+		int red =   (color >> 16) & 0xff;
+
+//		System.out.println("integerToColor:"+
+//				Color.rgb(red, green, blue).toString());
+
+		return Color.rgb(red, green, blue);
 	}
 }

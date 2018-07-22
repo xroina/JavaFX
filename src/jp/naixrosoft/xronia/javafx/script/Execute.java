@@ -4,7 +4,10 @@ import java.util.EventObject;
 import java.util.concurrent.BlockingQueue;
 
 import jp.naixrosoft.xronia.javafx.controller.GcController;
+import jp.naixrosoft.xronia.javafx.event.AllColor;
+import jp.naixrosoft.xronia.javafx.event.BgColor;
 import jp.naixrosoft.xronia.javafx.event.Cls;
+import jp.naixrosoft.xronia.javafx.event.FgColor;
 import jp.naixrosoft.xronia.javafx.event.Locate;
 import jp.naixrosoft.xronia.javafx.event.Print;
 import jp.naixrosoft.xronia.javafx.event.ScrollLeft;
@@ -238,6 +241,49 @@ public class Execute extends jp.naixrosoft.xronia.script.execute.Execute
 		}
 		try {
 			Thread.sleep(0, 1);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * 色指定
+	 *
+	 * @param fgcolor	フォアグラウンドカラー
+	 * @param bgcolor	バックグラウンドカラー
+	 */
+	@Override
+	public void setColor(int fgcolor, int bgcolor) {
+		try {
+			queue.put(new AllColor(this, fgcolor, bgcolor));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * フォアグラウンドカラー指定
+	 *
+	 * @param fgcolor	フォアグラウンドカラー
+	 */
+	@Override
+	public void setFgColor(int fgcolor) {
+		try {
+			queue.put(new FgColor(this, fgcolor));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * バックグラウンドカラー指定
+	 *
+	 * @param bgcolor	バックグラウンドカラー
+	 */
+	@Override
+	public void setBgColor(int bgcolor) {
+		try {
+			queue.put(new BgColor(this, bgcolor));
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
