@@ -13,7 +13,7 @@ public interface BaseDefine {
 
 	static final double BOX_RIGHT = 120;
 
-	static final int FONT_SIZE = 12;
+	static final int FONT_SIZE = 14;
 	static final int BUTTON_MAX = 3;
 
 	static final int TIME_OUT = 15;

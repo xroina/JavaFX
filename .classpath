@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="lwjgl/lwjgl-glfw-natives-macos.jar"/>
 	<classpathentry kind="lib" path="lwjgl/lwjgl-natives-linux.jar"/>
 	<classpathentry kind="lib" path="lwjgl/lwjgl-natives-macos.jar"/>
+	<classpathentry kind="lib" path="/xroniaScript/juniversalchardet/juniversalchardet-1.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

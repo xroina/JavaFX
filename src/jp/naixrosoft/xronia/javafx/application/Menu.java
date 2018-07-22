@@ -20,13 +20,26 @@ import jp.naixrosoft.xronia.script.Script;
 import jp.naixrosoft.xronia.script.bytecode.ByteCode;
 import jp.naixrosoft.xronia.script.exception.ScriptException;
 
+/**
+ * 右クリックメニュー構成オブジェクトクラス
+ *
+ * @author xronia
+ *
+ */
 public class Menu extends ContextMenu implements BaseDefine {
-	BlockingQueue<EventObject> queue = null;
-	GcController gcc = null;
-	private Execute exe = null;
-	private State ss = null;
 
+	BlockingQueue<EventObject> queue = null;	// イベントキュー
+	GcController gcc = null;					// グラフィックコンテキストコントローラー
+	private Execute exe = null;					// スクリプト実行オブジェクト
+	private State ss = null;					// スティック状態
 
+	/**
+	 * コントラクタ
+	 *
+	 * @param stage		メニューを開くベースとなるステージ
+	 * @param cvs		キャンバス描画オブジェクト
+	 * @param ss		スティック状態
+	 */
 	public Menu(Stage stage, Canvas cvs, State ss) {
 		this.ss = ss;
 
@@ -121,9 +134,9 @@ public class Menu extends ContextMenu implements BaseDefine {
 	public void stop() {
 		if(exe == null || !exe.runnable()) return;
 
-		exe.stop();
+		exe.stop();		// スクリプトの停止
 
-		gcc.stop();
+		gcc.stop();		// TimeLineの停止
 	}
 
 }

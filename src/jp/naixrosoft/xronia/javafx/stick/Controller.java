@@ -14,10 +14,10 @@ public final class Controller extends State {
 	private int stick = -1;		// ジョイスティックNo
 
 	/**
-	 * コントラクタ
+	 * コントラクタ<p>
 	 *
-	 * この中でジョイスティックの取得を行い、無い場合はジョイスティックNoに-1を入れる。
-	 * ジョイスティックありの場合はその名前を標準出力に表示して最初に見つかったジョイスティックを
+	 * この中でジョイスティックの取得を行い、無い場合はジョイスティックNoに-1を入れる。<br>
+	 * ジョイスティックありの場合はその名前を標準出力に表示して最初に見つかったジョイスティックを<br>
 	 * コントロール対象にする。
 	 */
 	public Controller() {
@@ -104,9 +104,12 @@ public final class Controller extends State {
 		return null;
 	}
 
+	/**
+	 * Optionalによる実装
+	 *
+	 * @return		Optional
+	 */
 	public Optional<State> getStateOptional() {
 		return Optional.ofNullable(getState());
 	}
-
-
 }

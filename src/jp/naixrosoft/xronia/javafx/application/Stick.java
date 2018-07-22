@@ -9,29 +9,47 @@ import javafx.scene.shape.Rectangle;
 import jp.naixrosoft.xronia.javafx.impl.BaseDefine;
 import jp.naixrosoft.xronia.javafx.stick.State;
 
+/**
+ * スティック描画オブジェクトクラス
+ *
+ * @author xronia
+ *
+ */
 public class Stick extends Rectangle implements BaseDefine {
 
+	// ベースの四角形の座標とサイズ
 	private static final double BASE_WIDTH = BOTTOM_HEIGHT - 40;
 	private static final double BASE_HEIGHT = BASE_WIDTH;
 	private static final double BASE_LEFT = 20;
 	private static final double BASE_TOP = HEIGHT + 20;
 
+	// スティック本体の座標とサイズ
 	private static final double CIRCLE_LEFT = BOTTOM_HEIGHT / 2;
 	private static final double CIRCLE_TOP = HEIGHT + BOTTOM_HEIGHT / 2;
 	private static final double CIRCLE_SIZE = 30;
 
-	private volatile Circle stick = null;
-	private volatile State ss = null;
-	private volatile Button[] button = new Button[2];
+	private State ss = null;					// スティックの状態
+	private Circle stick = null;				// ステック円
+	private Button[] button = new Button[2];	// ボタン
 
+	/**
+	 * コントラクタ
+	 *
+	 * @param root		ルートペイン
+	 * @param ss		スティック状態
+	 * @param button	ボタン描画オブジェクト
+	 */
 	public Stick(Pane root, State ss, Button[] button) {
+		// 自身の座標とサイズ設定
 		super(BASE_LEFT, BASE_TOP, BASE_WIDTH, BASE_HEIGHT);
-		this.setFill(Color.BLACK);
-		root.getChildren().add(this);
 
+		this.setFill(Color.BLACK);		// 自身の色
+		root.getChildren().add(this);	// 自身をルートペインに追加
+
+		// スティックの座標とサイズ設定
 		stick = new Circle(CIRCLE_LEFT, CIRCLE_TOP, CIRCLE_SIZE);
-		stick.setFill(RELEAS);
-		root.getChildren().add(stick);
+		stick.setFill(RELEAS);			// スティックの色
+		root.getChildren().add(stick);	// スティックをルートペインに追加
 
 		this.ss = ss;
 		this.button = button;
@@ -89,6 +107,11 @@ public class Stick extends Rectangle implements BaseDefine {
 
 	}
 
+	/**
+	 * スティックの位置設定
+	 *
+	 * @param ss	スティックの状態
+	 */
 	public void setCenter(State ss) {
 		stick.setCenterX(ss.getX() * BASE_WIDTH / 2 + CIRCLE_LEFT);
 		stick.setCenterY(ss.getY() * BASE_HEIGHT / 2 + CIRCLE_TOP);
@@ -158,4 +181,5 @@ public class Stick extends Rectangle implements BaseDefine {
 		}
 
 		e.consume();
-	};}
+	}
+}

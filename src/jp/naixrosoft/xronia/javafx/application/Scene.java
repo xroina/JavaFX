@@ -5,13 +5,28 @@ import javafx.scene.input.KeyEvent;
 import jp.naixrosoft.xronia.javafx.impl.BaseDefine;
 import jp.naixrosoft.xronia.javafx.stick.State;
 
+/**
+ * シーン描画オブジェクトクラス
+ *
+ * @author xronia
+ *
+ */
 public class Scene extends javafx.scene.Scene implements BaseDefine {
 
-	private volatile State ss = null;
-	private volatile Stick stick = null;
-	private volatile Button button[] = null;
+	private volatile State ss = null;			// スティックの状態
+	private volatile Stick stick = null;		// スティック描画オブジェクト
+	private volatile Button button[] = null;	// ボタン描画オブジェクト
 
+	/**
+	 * コントラクタ
+	 *
+	 * @param root		ルートペイン
+	 * @param ss		スティック状態
+	 * @param stick		スティック描画オブジェクト
+	 * @param button	ボタン描画オブジェクト
+	 */
 	public Scene(Parent root, State ss, Stick stick, Button[] button) {
+		// 自身のルートペインとサイズを設定
 		super(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		this.ss = ss;

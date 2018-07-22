@@ -25,19 +25,25 @@ import jp.naixrosoft.xronia.javafx.event.ScrollPrev;
 import jp.naixrosoft.xronia.javafx.event.ScrollRight;
 import jp.naixrosoft.xronia.javafx.impl.BaseDefine;
 
+/**
+ * グラフィックコンテキストコントローラークラス
+ *
+ * @author xronia
+ *
+ */
 public class GcController implements BaseDefine {
 
-	private static final int COLS = (int)WIDTH / 8;
-	private static final int ROWS = (int)HEIGHT / 16;
+	private static final int COLS = (int)WIDTH / 8;		// キャラクタX座標MAX
+	private static final int ROWS = (int)HEIGHT / 16;	// キャラクタY座標MAX
 
-	private final BlockingQueue<EventObject> queue;
-	Timeline timer = null;
+	private final BlockingQueue<EventObject> queue;		// イベントキュー
+	Timeline timer = null;								// タイムライン
 
-	private final GraphicsContext gc;
+	private final GraphicsContext gc;					// グラフィックコンテキスト
 
-	private char[][] charactor = new char[COLS][ROWS];
-	private int x = 0;
-	private int y = 0;
+	private char[][] charactor = new char[COLS][ROWS];	// キャラクタ座標系
+	private int x = 0;									// キャラクタX座標
+	private int y = 0;									// キャラクタY座標
 
 	/**
 	 * グラフィックコンテキストコントローラーのコンストラクタ
